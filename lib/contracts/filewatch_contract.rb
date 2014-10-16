@@ -50,6 +50,9 @@ module Contracts
       assert self.responds_to?(:listen_for_creation), "FileWatcher must support listen_for_creation"
       assert self.responds_to?(:listen_for_alteration), "FileWatcher must support listen_for_alteration"
       assert self.responds_to?(:listen_for_delete), "FileWatcher must support listen_for_delete"
+      assert_not_nil @deletion_listeners, "Deletion listener list not set"
+      assert_not_nil @alteration_listeners, "Alteration listener list not set"
+      assert_not_nil @creation_listeners, "Creation listener list not set"
     end
 
   end
