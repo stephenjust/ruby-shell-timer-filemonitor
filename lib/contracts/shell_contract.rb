@@ -22,7 +22,7 @@ module Contracts
       self.responds_to?(:is_internal_cmd?)
       self.responds_to?(:run)
       self.responds_to?(:is_valid_cmd?)
-      assert(File.directory?(@pwd), "Current path #{@pwd} must be a directory.")
+      assert(File.directory?(self.pwd), "Current path #{self.pwd} must be a directory.")
     end
 
   end
