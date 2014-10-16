@@ -5,7 +5,7 @@ module Contracts
     include Test::Unit::Assertions
 
     def class_invariant
-      
+      assert(File.directory?(@pwd), "Current path #{@pwd} must be a directory.")
     end
 
   end
