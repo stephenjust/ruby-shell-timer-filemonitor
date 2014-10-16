@@ -17,7 +17,7 @@ module Contracts
       assert @creation_listeners.responds_to(:length)
       assert (@creation_listeners.length > 0), "listen_for_creation must have added some listeners!"
     end
-    
+
     def pre_listen_for_alteration(files, &block)
       assert_not_nil files "Files to listen for must be provided!"
       assert_not_nil block "A listener must be provided!"
@@ -31,7 +31,7 @@ module Contracts
       assert @alterations_listeners.responds_to(:length)
       assert (@alterations_listeners.length > 0), "listen_for_alteration must have added some listeners!"
     end
-    
+
     def pre_listen_for_delete(files, &block)
       assert_not_nil files "Files to listen for must be provided!"
       assert_not_nil block "A listener must be provided!"
@@ -45,7 +45,7 @@ module Contracts
       assert @deletion_listeners.responds_to(:length)
       assert (@deletion_listeners.length > 0), "listen_for_delete must have added some listeners!"
     end
-    
+
     def class_invariant
       assert self.responds_to?(:listen_for_creation), "FileWatcher must support listen_for_creation"
       assert self.responds_to?(:listen_for_alteration), "FileWatcher must support listen_for_alteration"

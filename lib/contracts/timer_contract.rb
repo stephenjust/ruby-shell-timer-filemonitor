@@ -9,9 +9,10 @@ module Contracts
       assert (time > 0), "time cannot be less than or equal to zero"
       assert_not_nil block, "action cannot be nil"
     end
-    
+
     def class_invariant
-      assert self.responds_to?(:wait_then_execute), "timer must support wait_then_execute"
+      assert self.responds_to?(:wait_then_execute), "Timer must support wait_then_execute"
+      assert self.responds_to?(:is_running:?), "Timer must support is_running?"
     end
 
   end
