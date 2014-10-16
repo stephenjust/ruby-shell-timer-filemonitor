@@ -11,7 +11,7 @@ module Contracts
     end
     
     def class_invariant
-      assert self.responds_to?(:waitThenExecute), "timer must support waitThenExecute"
+      assert self.responds_to?(:wait_then_execute), "timer must support wait_then_execute"
     end
 
   end

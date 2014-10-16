@@ -18,10 +18,10 @@ module Contracts
     end
     
     def class_invariant
-      self.responds_to?(:execute_cmd)
-      self.responds_to?(:is_internal_cmd?)
-      self.responds_to?(:run)
-      self.responds_to?(:is_valid_cmd?)
+      assert self.responds_to?(:execute_cmd), "Shell must support execute_cmd"
+      assert self.responds_to?(:is_internal_cmd?), "Shell must support is_internal_cmd?"
+      assert self.responds_to?(:run) , "Shell must support run"
+      assert self.responds_to?(:is_valid_cmd?), "Shell must support is_valid_cmd?"
       assert(File.directory?(self.pwd), "Current path #{self.pwd} must be a directory.")
     end
 
