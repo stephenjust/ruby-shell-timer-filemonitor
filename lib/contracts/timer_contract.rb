@@ -12,7 +12,7 @@ module Contracts
 
     def class_invariant
       assert self.responds_to?(:wait_then_execute), "Timer must support wait_then_execute"
-      assert self.responds_to?(:is_running:?), "Timer must support is_running?"
+      assert self.responds_to?(:is_running?), "Timer must support is_running?"
     end
 
   end
