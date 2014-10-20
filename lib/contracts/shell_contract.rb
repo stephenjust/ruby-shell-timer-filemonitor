@@ -4,6 +4,10 @@ module Contracts
   module Shell
     include Test::Unit::Assertions
 
+    def pre_init(directory)
+      pre_cd(directory)
+    end
+
     def pre_execute_cmd(cmd)
       assert_not_nil cmd
     end
@@ -23,16 +27,16 @@ module Contracts
     end
 
     def post_pwd(result)
-      assert result.responds_to?(:to_s), "pwd must be convertible to a string"
+      assert result.respond_to?(:to_s), "pwd must be convertible to a string"
     end
 
     def class_invariant
-      assert self.responds_to?(:execute_cmd), "Shell must support execute_cmd"
-      assert self.responds_to?(:is_internal_cmd?), "Shell must support is_internal_cmd?"
-      assert self.responds_to?(:run) , "Shell must support run"
-      assert self.responds_to?(:is_valid_cmd?), "Shell must support is_valid_cmd?"
-      assert self.responds_to?(:cd), "FileWatcher must support cd"
-      assert self.responds_to?(:pwd), "FileWatcher must support pwd"
+      assert self.respond_to?(:execute_cmd), "Shell must support execute_cmd"
+      assert self.respond_to?(:is_internal_cmd?), "Shell must support is_internal_cmd?"
+      assert self.respond_to?(:run) , "Shell must support run"
+      assert self.respond_to?(:is_valid_cmd?), "Shell must support is_valid_cmd?"
+      assert self.respond_to?(:cd), "FileWatcher must support cd"
+      assert self.respond_to?(:pwd), "FileWatcher must support pwd"
       assert(File.directory?(self.pwd), "Current path #{self.pwd} must be a directory.")
     end
   end
