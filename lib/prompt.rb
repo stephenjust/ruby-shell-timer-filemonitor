@@ -1,7 +1,9 @@
 require_relative 'contracts/shell_contract'
+require_relative 'command_parser'
 
 class Prompt # Name 'Shell' is taken
   include Contracts::Shell
+  include CommandParser
 
   def initialize(directory)
     pre_init(directory)
@@ -15,7 +17,8 @@ class Prompt # Name 'Shell' is taken
     loop do
       class_invariant
       input = prompt_input
-      puts input
+      cmd = parse(input)
+      puts cmd
       class_invariant
     end
   end

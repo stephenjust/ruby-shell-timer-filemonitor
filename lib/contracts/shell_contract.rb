@@ -40,4 +40,17 @@ module Contracts
       assert(File.directory?(self.pwd), "Current path #{self.pwd} must be a directory.")
     end
   end
+
+  module CommandParser
+    include Test::Unit::Assertions
+
+    def pre_parse(cmd)
+      assert_not_nil cmd, "Command may not be nil!"
+    end
+
+    def post_parse(matches)
+      assert_not_nil matches, "Parsed command was nil!"
+      assert matches.size > 0, "Parsed command is empty!"
+    end
+  end
 end
