@@ -50,39 +50,3 @@ class FileWatcher
     listener.start
   end
 end
-
-puts "starting...."
-
-File.delete("./text.txt") if File.exist?("./text.txt")
-File.delete("./text2.txt") if File.exist?("./text2.txt")
-
-puts "listening...."
-
-fw = FileWatcher.new()
-fw.listen_for_creation(["./text.txt"]) do |path|
-  puts "#{path} was created!"
-end
-fw.listen_for_alteration(["./text.txt", "./text2.txt"]) do |path|
-  puts "#{path} was altered!"
-end
-fw.listen_for_delete(["./text.txt"]) do |path|
-  puts "#{path} was deleted!"
-end
-
-puts "opening...."
-
-File.open("./text.txt", "w+") do |file| file.puts("Test") end
-File.open("./text2.txt", "w+") do |file| file.puts("Test2") end
-
-10.times do |i|
-  puts "running...."
-  sleep(1.0)
-  
-  File.delete("./text.txt") if File.exist?("./text.txt") if i % 2 == 0
-  File.delete("./text2.txt") if File.exist?("./text2.txt")
-
-  File.open("./text.txt", "w+") do |file| file.puts("Test") end if i % 2 == 1
-  File.open("./text2.txt", "w+") do |file| file.puts("Test2") end
-end
-
-puts "done!"
