@@ -9,29 +9,29 @@ class FileWatcher
     @deletion_listeners = []
   end
 
-  def listen_for_creation(files, &block)
+  def listen_for_creation(files, duration, &block)
     selector = Proc.new do |modified, added, removed|
       added
     end
-    listen_impl(files, @creation_listeners, selector, &block)
+    listen_impl(files, @creation_listeners, duration, selector, &block)
   end
 
-  def listen_for_alteration(files, &block)
+  def listen_for_alteration(files, duration, &block)
     selector = Proc.new do |modified, added, removed|
       modified
     end
-    listen_impl(files, @alterations_listeners, selector, &block)
+    listen_impl(files, @alterations_listeners, duration, selector, &block)
   end
 
-  def listen_for_delete(files, &block)
+  def listen_for_delete(files, duration, &block)
     selector = Proc.new do |modified, added, removed|
       removed
     end
-    listen_impl(files, @deletion_listeners, selector, &block)
+    listen_impl(files, @deletion_listeners, duration, selector, &block)
   end
 
   private
-  def listen_impl(files, list, selector, &block)
+  def listen_impl(files, list, duration, selector, &block)
     # convert files to absolute paths
     files.map! do |val|
       File.absolute_path(val)
@@ -44,7 +44,13 @@ class FileWatcher
     end
     listener = Listen.to(dirs) do |modified, added, removed|
       set = selector.call(modified, added, removed)
-      (files & set).each do |val| block.call(val) end
+      (files & set).each do |val|
+        # putting in a separate thread so the listener doesn't block
+        Thread.new do ||
+          sleep(duration)
+          block.call(val)
+        end
+      end
     end
     list << listener
     listener.start
