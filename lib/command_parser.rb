@@ -1,4 +1,4 @@
-require 'csv'
+require 'shellwords'
 require_relative 'contracts/shell_contract'
 
 module CommandParser
@@ -6,8 +6,7 @@ module CommandParser
 
   def parse(cmd)
     pre_parse(cmd)
-    matches = cmd.scan(/\w+|"(?:\\"|[^"])+"/)
-    matches.map! {|x| x.strip}
+    matches = Shellwords.shellsplit(cmd)
     post_parse(matches)
     matches
   end
