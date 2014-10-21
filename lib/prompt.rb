@@ -18,7 +18,8 @@ class Prompt # Name 'Shell' is taken
       class_invariant
       input = prompt_input
       cmd = parse(input)
-      puts cmd
+      fmt_cmd = format_for_exec(cmd)
+      puts "#{fmt_cmd}"
       class_invariant
     end
   end
