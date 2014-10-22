@@ -36,7 +36,8 @@ class Prompt # Name 'Shell' is taken
   def execute_cmd(cmd)
     pre_execute_cmd(cmd)
     begin
-      exec([cmd[0], cmd[1]], *cmd[2..-1])
+      env = {"PWD" => @pwd}
+      exec(env, [cmd[0], cmd[1]], *cmd[2..-1], :unsetenv_others=>true, :chdir=>@pwd)
     rescue Errno::ENOENT
       puts "Command '#{cmd[0]}' not found."
     end
