@@ -18,9 +18,14 @@ class Prompt # Name 'Shell' is taken
       class_invariant
       input = prompt_input
       cmd = parse(input)
+      next if cmd.size == 0
       fmt_cmd = format_for_exec(cmd)
       pid = fork { execute_cmd(fmt_cmd) }
-      Process.waitpid(pid)
+      begin
+        Process.waitpid(pid)
+      rescue SystemExit, Interrupt
+        Process.kill("SIGINT", pid)
+      end
       class_invariant
     end
   end
