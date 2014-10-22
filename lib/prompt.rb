@@ -19,7 +19,8 @@ class Prompt # Name 'Shell' is taken
       input = prompt_input
       cmd = parse(input)
       fmt_cmd = format_for_exec(cmd)
-      puts "#{fmt_cmd}"
+      pid = fork { execute_cmd(fmt_cmd) }
+      Process.waitpid(pid)
       class_invariant
     end
   end
@@ -32,7 +33,15 @@ class Prompt # Name 'Shell' is taken
     return command
   end
 
-  def execute_cmd; end
+  def execute_cmd(cmd)
+    pre_execute_cmd(cmd)
+    begin
+      exec([cmd[0], cmd[1]], *cmd[2..-1])
+    rescue Errno::ENOENT
+      puts "Command '#{cmd[0]}' not found."
+    end
+  end
+
   def is_internal_cmd?; end
   def is_valid_cmd?; end
   def cd; end
