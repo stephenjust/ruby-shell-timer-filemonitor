@@ -5,6 +5,8 @@
 
 require_once 'lib/prompt'
 
+# Note: Requires Ruby 1.9.3
+
 # You can execute part 1 of the assignment on its own by running
 # the script called "shell".
 #
@@ -21,7 +23,18 @@ require_once 'lib/prompt'
 p = Prompt.new('/')
 p.run
 
+# To run Parts 2 and three first ensure all dependencies are resolved
+# To do this we will need bundler to resolve the dependencies
+# run:
+#
+# cd ./lib
+# gem install bundler
+# bundler install
+#
+# after this the dependencies will be ready for use. Note: Only supports Linux systems!
+
 # To run Part 2, the timer:
+#
 # cd ./lib
 # ruby timer_driver.rb "My Delayed Message" 2500
 #
