@@ -24,7 +24,6 @@ module Contracts
 
     def pre_cd(target)
       assert_not_nil target
-      assert File.directory?(target), "#{target} is not a directory!"
     end
 
     def post_pwd(result)

@@ -1,5 +1,6 @@
 require_relative 'contracts/shell_contract'
 require_relative 'command_parser'
+require 'pathname'
 
 class Prompt # Name 'Shell' is taken
   include Contracts::Shell
@@ -80,8 +81,13 @@ class Prompt # Name 'Shell' is taken
 
   def cd(dir)
     class_invariant
-    pre_cd(dir)
-    @pwd = File.absolute_path(dir)
+    new_dir = Pathname.new("#{@pwd}/#{dir}").cleanpath
+    pre_cd(new_dir)
+    if File.directory?(new_dir)
+      @pwd = File.absolute_path(new_dir)
+    else
+      puts "#{new_dir} is not a directory!"
+    end
     class_invariant
   end
 
