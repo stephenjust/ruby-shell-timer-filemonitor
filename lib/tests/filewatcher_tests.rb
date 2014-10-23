@@ -4,7 +4,6 @@ require_relative '../file_watcher'
 class FileWatcherTest < Test::Unit::TestCase
 
   TEST_FILE = "test.txt"
-  TIMEOUT = 10
   SLEEP_INTERVAL = 1
 
   def setup
@@ -29,10 +28,7 @@ class FileWatcherTest < Test::Unit::TestCase
       file.write("opened")
     end
 
-    TIMEOUT.times do |i|
-      break if isComplete
-      sleep(SLEEP_INTERVAL)
-    end
+    sleep(SLEEP_INTERVAL)
 
     assert(isComplete, "Failed to register the file creation before the test timed out!")
   end
@@ -52,10 +48,7 @@ class FileWatcherTest < Test::Unit::TestCase
       file.write("modified")
     end
 
-    TIMEOUT.times do ||
-      break if isComplete
-      sleep(SLEEP_INTERVAL)
-    end
+    sleep(SLEEP_INTERVAL)
 
     assert(isComplete, "Failed to register the file creation before the test timed out!")
   end
@@ -71,13 +64,10 @@ class FileWatcherTest < Test::Unit::TestCase
       assert fileName.include? TEST_FILE
       isComplete = true
     end
-    
+
     File.delete(TEST_FILE) if File.exists?(TEST_FILE)
 
-    TIMEOUT.times do ||
-      break if isComplete
-      sleep(SLEEP_INTERVAL)
-    end
+    sleep(SLEEP_INTERVAL)
 
     assert(isComplete, "Failed to register the file deletion before the test timed out!")
   end
