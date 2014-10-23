@@ -69,7 +69,6 @@ class FileWatcher
         # putting in a separate thread so the listener doesn't block
         Thread.new do ||
           begin
-            sleep(duration)
             block.call(val)
             listener.stop if runOnce
           rescue Exception => ex
@@ -77,6 +76,10 @@ class FileWatcher
           end
         end
       end
+    end
+    Thread.new do ||
+      sleep(duration)
+      listener.stop
     end
     list << listener
     listener.start

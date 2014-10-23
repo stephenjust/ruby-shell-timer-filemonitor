@@ -4,7 +4,7 @@ require_relative '../file_watcher'
 class FileWatcherTest < Test::Unit::TestCase
 
   TEST_FILE = "test.txt"
-  SLEEP_INTERVAL = 1
+  SLEEP_INTERVAL = 5
 
   def setup
     @fw = FileWatcher.new()
@@ -19,7 +19,7 @@ class FileWatcherTest < Test::Unit::TestCase
 
   def testListenCreate
     isComplete = false
-    @fw.listen_for_creation([TEST_FILE], 0.05) do |fileName|
+    @fw.listen_for_creation([TEST_FILE], 100) do |fileName|
       assert fileName.include? TEST_FILE
       isComplete = true
     end
@@ -39,7 +39,7 @@ class FileWatcherTest < Test::Unit::TestCase
     end
 
     isComplete = false
-    @fw.listen_for_alteration([TEST_FILE], 0) do |fileName|
+    @fw.listen_for_alteration([TEST_FILE], 100) do |fileName|
       assert fileName.include? TEST_FILE
       isComplete = true
     end
@@ -60,7 +60,7 @@ class FileWatcherTest < Test::Unit::TestCase
     end
 
     isComplete = false
-    @fw.listen_for_delete([TEST_FILE], 0.05) do |fileName|
+    @fw.listen_for_delete([TEST_FILE], 100) do |fileName|
       assert fileName.include? TEST_FILE
       isComplete = true
     end

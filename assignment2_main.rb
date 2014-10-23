@@ -3,7 +3,7 @@
 #
 # System Shell, Timer, File Watcher
 
-require_once 'lib/prompt'
+require_relative 'lib/prompt'
 
 # You can execute part 1 of the assignment on its own by running
 # the script called "shell".
@@ -20,4 +20,3 @@ require_once 'lib/prompt'
 # program except for the current directory.
 p = Prompt.new('/')
 p.run
-
