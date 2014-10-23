@@ -1,7 +1,7 @@
 require 'test/unit'
 require_relative '../file_watcher'
 
-class CommandParserTest < Test::Unit::TestCase
+class FileWatcherTest < Test::Unit::TestCase
 
   TEST_FILE = "test.txt"
   TIMEOUT = 10
@@ -25,10 +25,11 @@ class CommandParserTest < Test::Unit::TestCase
       isComplete = true
     end
 
-    File.open(TEST_FILE, "w") do ||
+    File.open(TEST_FILE, "w") do |file|
+      file.write("opened")
     end
 
-    TIMEOUT.times do ||
+    TIMEOUT.times do |i|
       break if isComplete
       sleep(SLEEP_INTERVAL)
     end
@@ -37,21 +38,21 @@ class CommandParserTest < Test::Unit::TestCase
   end
 
   def testListenAlter
+    File.open(TEST_FILE, "w") do |file|
+      file.write("open")
+    end
+
     isComplete = false
-    @fw.listen_for_alteration([TEST_FILE], 0.05) do |fileName|
+    @fw.listen_for_alteration([TEST_FILE], 0) do |fileName|
       assert fileName.include? TEST_FILE
       isComplete = true
     end
 
     File.open(TEST_FILE, "w") do |file|
-      file.write("open")
+      file.write("modified")
     end
 
     TIMEOUT.times do ||
-      File.open(TEST_FILE, "w") do |file|
-        file.write("modified")
-      end
-
       break if isComplete
       sleep(SLEEP_INTERVAL)
     end
@@ -60,24 +61,25 @@ class CommandParserTest < Test::Unit::TestCase
   end
 
   def testListenDelete
-    isComplete = false
-    @fw.listen_for_alteration([TEST_FILE], 0.05) do |fileName|
-      assert fileName.include? TEST_FILE
-      isComplete = true
-    end
 
     File.open(TEST_FILE, "w") do |file|
       file.write("open")
     end
 
-    TIMEOUT.times do ||
-      File.delete(TEST_FILE) if File.exists(TEST_FILE)
+    isComplete = false
+    @fw.listen_for_delete([TEST_FILE], 0.05) do |fileName|
+      assert fileName.include? TEST_FILE
+      isComplete = true
+    end
+    
+    File.delete(TEST_FILE) if File.exists?(TEST_FILE)
 
+    TIMEOUT.times do ||
       break if isComplete
       sleep(SLEEP_INTERVAL)
     end
 
-    assert(isComplete, "Failed to register the file creation before the test timed out!")
+    assert(isComplete, "Failed to register the file deletion before the test timed out!")
   end
 
 end

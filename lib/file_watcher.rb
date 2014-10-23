@@ -3,31 +3,52 @@ require 'listen'
 require_relative './contracts/filewatch_contract'
 
 class FileWatcher
+  include Contracts::FileWatch
+
   def initialize()
     @creation_listeners = []
-    @alterations_listeners = []
+    @alteration_listeners = []
     @deletion_listeners = []
+    class_invariant
   end
 
   def listen_for_creation(files, duration, runOnce = true, &block)
+    class_invariant
+    pre_listen_for_creation(files, &block)
+
     selector = Proc.new do |modified, added, removed|
       added
     end
-    listen_impl(files, @creation_listeners, duration, selector, runOnce &block)
+    listen_impl(files, @creation_listeners, duration, selector, runOnce, &block)
+
+    post_listen_for_creation
+    class_invariant
   end
 
   def listen_for_alteration(files, duration, runOnce = true, &block)
+    class_invariant
+    pre_listen_for_alteration(files, &block)
+
     selector = Proc.new do |modified, added, removed|
       modified
     end
-    listen_impl(files, @alterations_listeners, duration, selector, runOnce, &block)
+    listen_impl(files, @alteration_listeners, duration, selector, runOnce, &block)
+
+    post_listen_for_alteration
+    class_invariant
   end
 
   def listen_for_delete(files, duration, runOnce = true, &block)
+    class_invariant
+    pre_listen_for_delete(files, &block)
+
     selector = Proc.new do |modified, added, removed|
       removed
     end
     listen_impl(files, @deletion_listeners, duration, selector, runOnce, &block)
+
+    post_listen_for_delete
+    class_invariant
   end
 
   private
@@ -42,19 +63,18 @@ class FileWatcher
       val = File.dirname(val) unless File.directory?(val)
       val
     end
-    puts "dirs : #{dirs}"
     listener = Listen.to(dirs) do |modified, added, removed|
-      puts "added #{added}"
-      puts "modified #{modified}"
-      puts "removed #{removed}"
       set = selector.call(modified, added, removed)
       (files & set).each do |val|
-        puts "callback!"
         # putting in a separate thread so the listener doesn't block
         Thread.new do ||
-          sleep(duration)
-          block.call(val)
-          listener.stop if runOnce
+          begin
+            sleep(duration)
+            block.call(val)
+            listener.stop if runOnce
+          rescue Exception => ex
+            puts "Error in listener : #{ex}"
+          end
         end
       end
     end
