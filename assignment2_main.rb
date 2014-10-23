@@ -33,6 +33,13 @@ p.run
 #
 # after this the dependencies will be ready for use. Note: Only supports Linux systems!
 
+# Finally we need to compile the timer
+#
+# cd ./lib/Timer
+# ruby extconf.rb
+# make
+#
+
 # To run Part 2, the timer:
 #
 # cd ./lib
