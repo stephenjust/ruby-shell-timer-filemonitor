@@ -15,11 +15,4 @@ module CommandParser
     return matches
   end
 
-  def format_for_exec(cmd)
-    pre_format_for_exec(cmd)
-    cmd = cmd.insert(1, "") # Null character for argv[1]
-    post_format_for_exec(cmd)
-    return cmd
-  end
-
 end

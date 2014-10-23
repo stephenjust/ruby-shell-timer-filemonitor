@@ -51,13 +51,5 @@ module Contracts
     def post_parse(matches)
       assert_not_nil matches, "Parsed command was nil!"
     end
-
-    def pre_format_for_exec(cmd)
-      assert_respond_to cmd, :insert, "Input must respond to :insert"
-    end
-
-    def post_format_for_exec(ret)
-      assert ret.size > 1, "exec() must be passed at least two arguments, got #{ret.size}"
-    end
   end
 end

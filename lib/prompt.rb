@@ -27,11 +27,10 @@ class Prompt # Name 'Shell' is taken
       input = prompt_input
       cmd = parse(input)
       next if cmd.size == 0
-      fmt_cmd = format_for_exec(cmd)
-      if is_internal_cmd?(fmt_cmd)
-        execute_internal(fmt_cmd)
+      if is_internal_cmd?(cmd)
+        execute_internal(cmd)
       else
-        pid = fork { execute_cmd(fmt_cmd) }
+        pid = fork { execute_cmd(cmd) }
         begin
           Process.waitpid(pid)
         rescue Interrupt
@@ -55,7 +54,7 @@ class Prompt # Name 'Shell' is taken
     pre_execute_cmd(cmd)
     begin
       env = {"PWD" => @pwd}
-      exec(env, [cmd[0], cmd[1]], *cmd[2..-1], :unsetenv_others=>true, :chdir=>@pwd)
+      exec(env, [cmd[0], ""], *cmd[1..-1], :unsetenv_others=>true, :chdir=>@pwd)
     rescue Errno::ENOENT
       puts "Command '#{cmd[0]}' not found."
     end
@@ -65,7 +64,7 @@ class Prompt # Name 'Shell' is taken
   def execute_internal(cmd)
     class_invariant
     begin
-      send(@internal_cmds[cmd[0]], *cmd[2..-1])
+      send(@internal_cmds[cmd[0]], *cmd[1..-1])
     rescue ArgumentError
       puts "Invalid arguments"
     end
