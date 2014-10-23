@@ -22,6 +22,10 @@ module Contracts
       assert self.is_valid_cmd(cmdInput?)
     end
 
+    def pre_execute_internal(cmd)
+      assert_not_nil @internal_cmds[cmd[0]]
+    end
+
     def pre_cd(target)
       assert_not_nil target
     end
