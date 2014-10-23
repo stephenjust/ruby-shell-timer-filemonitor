@@ -17,14 +17,21 @@ class Prompt # Name 'Shell' is taken
     class_invariant
   end
 
+  # Generates shell prompt string
   def ps1
     "shell:#{@pwd} $ "
   end
 
+  # Main shell loop
   def run
     loop do
       class_invariant
-      input = prompt_input
+      begin
+        input = prompt_input
+      rescue Interrupt
+        puts "Interrupted. Exit with 'exit'."
+        next
+      end
       cmd = parse(input)
       next if cmd.size == 0
       if is_internal_cmd?(cmd)
@@ -41,6 +48,7 @@ class Prompt # Name 'Shell' is taken
     end
   end
 
+  # Prompt for user input
   def prompt_input
     class_invariant
     print ps1
@@ -49,6 +57,7 @@ class Prompt # Name 'Shell' is taken
     return command
   end
 
+  # Execute a binary file
   def execute_cmd(cmd)
     class_invariant
     pre_execute_cmd(cmd)
@@ -61,6 +70,7 @@ class Prompt # Name 'Shell' is taken
     class_invariant
   end
 
+  # Execute an internal command
   def execute_internal(cmd)
     class_invariant
     begin
@@ -70,14 +80,14 @@ class Prompt # Name 'Shell' is taken
     end
     class_invariant
   end
-  
+
+  # Check if a command is internal
   def is_internal_cmd?(cmd)
     pre_is_internal_cmd(cmd)
     @internal_cmds.include?(cmd[0])
   end
 
-  def is_valid_cmd?; end
-
+  # Internal command 'cd'
   def cd(dir)
     class_invariant
     new_dir = Pathname.new("#{@pwd}/#{dir}").cleanpath
@@ -90,10 +100,12 @@ class Prompt # Name 'Shell' is taken
     class_invariant
   end
 
+  # Internal command 'pwd'
   def pwd
     puts @pwd
   end
 
+  # Internal command 'exit'
   def exit
     puts "Exiting"
     Kernel.exit
