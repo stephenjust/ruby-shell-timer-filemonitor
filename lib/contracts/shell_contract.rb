@@ -12,8 +12,9 @@ module Contracts
       assert_not_nil cmd
     end
 
-    def pre_is_internal_cmd?
+    def pre_is_internal_cmd(cmd)
       assert_not_nil @internal_cmds
+      assert cmd.respond_to?(:[])
     end
 
     def pre_run(cmdInput)
@@ -37,7 +38,7 @@ module Contracts
       assert self.respond_to?(:is_valid_cmd?), "Shell must support is_valid_cmd?"
       assert self.respond_to?(:cd), "FileWatcher must support cd"
       assert self.respond_to?(:pwd), "FileWatcher must support pwd"
-      assert(File.directory?(self.pwd), "Current path #{self.pwd} must be a directory.")
+      assert(File.directory?(@pwd), "Current path #{@pwd} must be a directory.")
     end
   end
 

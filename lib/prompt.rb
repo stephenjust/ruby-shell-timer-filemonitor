@@ -7,10 +7,17 @@ class Prompt # Name 'Shell' is taken
 
   def initialize(directory)
     pre_init(directory)
-    @pwd = directory
-    @ps1 = "shell:#{@pwd} $ "
-    @internal_cmds = {}
+    @pwd = directory or '/'
+    @internal_cmds = {
+      "cd" => :cd,
+      "exit" => :exit,
+      "pwd" => :pwd
+    }
     class_invariant
+  end
+
+  def ps1
+    "shell:#{@pwd} $ "
   end
 
   def run
@@ -20,11 +27,15 @@ class Prompt # Name 'Shell' is taken
       cmd = parse(input)
       next if cmd.size == 0
       fmt_cmd = format_for_exec(cmd)
-      pid = fork { execute_cmd(fmt_cmd) }
-      begin
-        Process.waitpid(pid)
-      rescue SystemExit, Interrupt
-        Process.kill("SIGINT", pid)
+      if is_internal_cmd?(fmt_cmd)
+        execute_internal(fmt_cmd)
+      else
+        pid = fork { execute_cmd(fmt_cmd) }
+        begin
+          Process.waitpid(pid)
+        rescue Interrupt
+          Process.kill("SIGINT", pid)
+        end
       end
       class_invariant
     end
@@ -32,13 +43,14 @@ class Prompt # Name 'Shell' is taken
 
   def prompt_input
     class_invariant
-    print @ps1
+    print ps1
     command = gets.chomp
     class_invariant
     return command
   end
 
   def execute_cmd(cmd)
+    class_invariant
     pre_execute_cmd(cmd)
     begin
       env = {"PWD" => @pwd}
@@ -46,11 +58,39 @@ class Prompt # Name 'Shell' is taken
     rescue Errno::ENOENT
       puts "Command '#{cmd[0]}' not found."
     end
+    class_invariant
   end
 
-  def is_internal_cmd?; end
-  def is_valid_cmd?; end
-  def cd; end
-  def pwd; return '/'; end
+  def execute_internal(cmd)
+    class_invariant
+    begin
+      send(@internal_cmds[cmd[0]], *cmd[2..-1])
+    rescue ArgumentError
+      puts "Invalid arguments"
+    end
+    class_invariant
+  end
+  
+  def is_internal_cmd?(cmd)
+    pre_is_internal_cmd(cmd)
+    @internal_cmds.include?(cmd[0])
+  end
 
+  def is_valid_cmd?; end
+
+  def cd(dir)
+    class_invariant
+    pre_cd(dir)
+    @pwd = File.absolute_path(dir)
+    class_invariant
+  end
+
+  def pwd
+    puts @pwd
+  end
+
+  def exit
+    puts "Exiting"
+    Kernel.exit
+  end
 end
