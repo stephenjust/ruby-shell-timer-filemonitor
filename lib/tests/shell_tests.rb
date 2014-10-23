@@ -1,5 +1,7 @@
 require 'test/unit'
+require 'stringio'
 require_relative '../command_parser'
+require_relative '../prompt'
 
 class CommandParserTest < Test::Unit::TestCase
   include CommandParser
@@ -36,4 +38,32 @@ class CommandParserTest < Test::Unit::TestCase
     end
   end 
 
+end
+
+class PromptTest < Test::Unit::TestCase
+
+  def setup
+    @p = Prompt.new('/')
+  end
+
+  def testExecuteInternal
+    $stdout = StringIO.new
+    @p.execute_internal(["pwd"])
+    assert_equal "/\n", $stdout.string
+  end
+
+  def testPwd
+    $stdout = StringIO.new
+    @p.pwd
+    assert_equal "/\n", $stdout.string
+  end
+
+  def testCd
+    $stdout = StringIO.new
+    @p.cd("../../../")
+    @p.pwd
+    @p.cd("/home/")
+    @p.pwd
+    assert_equal "/\n/home\n", $stdout.string
+  end
 end

@@ -73,6 +73,7 @@ class Prompt # Name 'Shell' is taken
   # Execute an internal command
   def execute_internal(cmd)
     class_invariant
+    pre_execute_internal(cmd)
     begin
       send(@internal_cmds[cmd[0]], *cmd[1..-1])
     rescue ArgumentError
