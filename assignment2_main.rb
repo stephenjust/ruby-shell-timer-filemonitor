@@ -3,7 +3,7 @@
 #
 # System Shell, Timer, File Watcher
 
-require_relative 'lib/prompt'
+require_once 'lib/prompt'
 
 # You can execute part 1 of the assignment on its own by running
 # the script called "shell".
@@ -20,3 +20,16 @@ require_relative 'lib/prompt'
 # program except for the current directory.
 p = Prompt.new('/')
 p.run
+
+# To run Part 2, the timer:
+# cd ./lib
+# ruby timer_driver.rb "My Delayed Message" 2500
+#
+# Note: 2500 is in milliseconds
+
+# To run Part 3, the file watcher:
+# cd ./lib
+# ruby file_watch_driver.rb created_file modified_file deleted_file duration
+# Eg. ruby file_watch_driver.rb foo.txt bar.txt foobar.txt 100
+#
+# Note: 100 is in seconds
